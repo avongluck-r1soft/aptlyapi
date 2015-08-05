@@ -61,8 +61,8 @@ module AptlyAPI
 		##
 		# Get AptlyRepo object for repo called +name+
 		def get_repo(name)
-			remote_repo = hget("/api/repos/#{name}")
-			return Repo.new(@server, remote_repo)
+			info = hget("/api/repos/#{name}")
+			return Repo.new(@server, info)
 		end
 
 		##
@@ -93,7 +93,7 @@ module AptlyAPI
 		end
 
 		##
-		# Compre two AptlyServer objects to see if they are identical
+		# Compare two AptlyServer objects to see if they are identical
 		def ==(r)
 			r.server == server and r.version == version
 		end

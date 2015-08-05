@@ -1,14 +1,13 @@
 require 'minitest/autorun'
 require 'aptlyapi'
 
-class TestAptlyServer < Minitest::Test
+class TestServer < Minitest::Test
 	def setup
 		@server = AptlyAPI::Server.new("http://10.80.65.147:8080")
 	end
 	def test_server_version
 		assert @server.version
 		refute_equal "unknown", @server.version
-		puts "version:#{@server.version}"
 	end
 	def test_server_comparison
 		@equal = AptlyAPI::Server.new("http://10.80.65.147:8080")
