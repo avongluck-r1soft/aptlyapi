@@ -13,3 +13,4 @@
 #######################################################
 
 require 'aptlyserver'
+require 'aptlyrepo'

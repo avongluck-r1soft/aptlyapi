@@ -25,10 +25,25 @@ module AptlyAPI
 		def initialize(url)
 			@server = URI(url)
 			begin
-				@version = JSON.parse(Net::HTTP.get(@server.host, @server.path << '/api/version', @server.port)).fetch("Version", nil)
+				@version = JSON.parse(Net::HTTP.get(@server.host, "#{@server.path}/api/version", @server.port)).fetch("Version", "unknown")
 			rescue
 				return nil
 			end
+		end
+
+		def get_repos
+			repos = Array.new
+			remote_repos = JSON.parse(Net::HTTP.get(@server.host, "#{@server.path}/api/repos", @server.port))
+			remote_repos.each do |info|
+				repos.push(AptlyRepo.new(@server, info))
+			end
+			repos
+		end
+
+		def get_repo(name)
+			repos = Array.new
+			remote_repo = JSON.parse(Net::HTTP.get(@server.host, "#{@server.path}/api/repos/#{name}", @server.port))
+			AptlyRepo.new(@server, info)
 		end
 
 		##
