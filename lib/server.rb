@@ -14,6 +14,7 @@
 
 require 'uri'
 require 'net/http'
+require 'net/http/post/multipart'
 require 'json'
 
 module AptlyAPI
@@ -67,9 +68,28 @@ module AptlyAPI
 		##
 		# Return true if repo called +name+ exists. Otherwise false
 		def repo_exist?(name)
-			remote_repo = hget("/api/repos/#{name}")
-			return true if remote_repo.kind_of?(Hash)
+			remote_repos = hget("/api/repos")
+			inventory = Array.new
+			remote_repos.each do |info|
+				inventory.push(info.fetch("Name"))
+			end
+			return true if inventory.include?(name)
 			return false
+		end
+
+		##
+		# Upload a local +file+ to the server at +directory+
+		def file_upload(file, directory)
+			if !File.exist?(file)
+				return false
+			end
+			File.open(file) do |data|
+				request = Net::HTTP::Post::Multipart.new("#{@server.path}/api/files/#{directory}",
+					"file" => UploadIO.new(data, "application/x-debian-package", File.basename(file)))
+				result = Net::HTTP.start(@server.host, @server.port) do |conn|
+					conn.request(request)
+				end
+			end
 		end
 
 		##

@@ -23,4 +23,7 @@ class TestAptlyServer < Minitest::Test
 		@server.delete_repo("test")
 		assert_equal false, @server.repo_exist?("test")
 	end
+	def test_server_upload
+		@server.file_upload("/var/cache/apt/archives/aptly_0.8-3_amd64.deb", "test")
+	end
 end
