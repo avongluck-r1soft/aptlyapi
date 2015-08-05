@@ -68,7 +68,8 @@ module AptlyAPI
 		# Return true if repo called +name+ exists. Otherwise false
 		def repo_exist?(name)
 			remote_repo = hget("/api/repos/#{name}")
-			return true
+			return true if remote_repo.kind_of?(Hash)
+			return false
 		end
 
 		##

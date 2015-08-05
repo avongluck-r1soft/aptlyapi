@@ -7,7 +7,7 @@ class TestAptlyServer < Minitest::Test
 	end
 	def test_server_version
 		assert @server.version
-		refute_equal @server.version, "unknown"
+		refute_equal "unknown", @server.version
 		puts "version:#{@server.version}"
 	end
 	def test_server_comparison
@@ -19,10 +19,8 @@ class TestAptlyServer < Minitest::Test
 	end
 	def test_server_create_repo
 		@server.create_repo("test")
-		assert @server.repo_exist?("test")
-	end
-	def test_server_delete_repo
-		#@server.delete_repo("test")
-		#refute @server.repo_exist?("test")
+		assert_equal true, @server.repo_exist?("test")
+		@server.delete_repo("test")
+		assert_equal false, @server.repo_exist?("test")
 	end
 end
