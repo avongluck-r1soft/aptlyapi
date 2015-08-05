@@ -6,7 +6,7 @@ require 'json'
 module AptlyAPI
     ##
     # This class represents an Aptly server running the Aptly API
-    class AptlyRepo
+    class Repo
         ##
         # Creates a new AptlyRepo located at +url+
         def initialize(server, json)

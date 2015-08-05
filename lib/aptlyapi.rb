@@ -12,5 +12,5 @@
 #
 #######################################################
 
-require 'aptlyserver'
-require 'aptlyrepo'
+require_relative 'server.rb'
+require_relative 'repo.rb'
