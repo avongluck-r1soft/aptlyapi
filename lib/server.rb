@@ -89,7 +89,7 @@ module AptlyAPI
 				result = Net::HTTP.start(@server.host, @server.port) do |conn|
 					conn.request(request)
 				end
-				if result.code != 200
+				if result.code.to_i != 200
 					return false
 				end
 			end
