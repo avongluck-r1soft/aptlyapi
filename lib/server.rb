@@ -97,6 +97,33 @@ module AptlyAPI
 		end
 
 		##
+		# Publish a repo from +sources+ (array of "Component/Name")
+		#
+		# TODO: There are bare minimum for the moment and will change
+		def publish(kind, sources, distribution, keyid, password)
+			body = Hash.new
+			body.merge!({"SourceKind" => kind})
+			body.merge!({"Sources" => sources})
+			body.merge!({"Distribution" => distribution})
+			body.merge!({"ForceOverwrite" => true})
+			body.merge!({"Signing" => { "GpgKey" => keyid, "Passphrase" => password}})
+			return true if hpost('/api/publish', body) == 200
+			return false
+		end
+
+		##
+		# Update a published repo
+		#
+		# TODO: There are bare minimum for the moment and will change
+		def publish_update(distribution, keyid, password)
+			body = Hash.new
+			body.merge!({"ForceOverwrite" => true})
+			body.merge!({"Signing" => { "GpgKey" => keyid, "Passphrase" => password}})
+			return true if hput("/api/publish//#{distribution}", body) == 200
+			return false
+		end
+
+		##
 		# Compare two AptlyServer objects to see if they are identical
 		def ==(r)
 			r.server == server and r.version == version
@@ -120,6 +147,16 @@ module AptlyAPI
 		# Post +data+ hash to +path+ as JSON
 		def hpost(path, data)
 			request = Net::HTTP::Post.new("#{@server.path}#{path}")
+			request.add_field('Content-Type', 'application/json')
+			request.body = data.to_json
+			response = @http.request(request)
+			return response.code.to_i
+		end
+
+		##
+		# Put +data+ hash to +path+ as JSON
+		def hput(path, data)
+			request = Net::HTTP::Put.new("#{@server.path}#{path}")
 			request.add_field('Content-Type', 'application/json')
 			request.body = data.to_json
 			response = @http.request(request)
