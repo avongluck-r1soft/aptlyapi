@@ -25,6 +25,12 @@ module AptlyAPI
 			hpost("/api/repos/#{@name}/file/#{directory}", options)
 		end
 
+		##
+		# Edit repo +properties+
+		def edit(properties)
+			hput("/api/repos/#{@name}", properties)
+		end
+
 		attr_reader :name, :comment, :distribution, :component
 
 	protected
@@ -43,6 +49,16 @@ module AptlyAPI
 		# Post +data+ hash to +path+ as JSON
 		def hpost(path, data)
 			request = Net::HTTP::Post.new("#{@server.path}#{path}")
+			request.add_field('Content-Type', 'application/json')
+			request.body = data.to_json
+			response = @http.request(request)
+			return response.code.to_i
+		end
+
+		##
+		# Put +data+ hash to +path+ as JSON
+		def hput(path, data)
+			request = Net::HTTP::Put.new("#{@server.path}#{path}")
 			request.add_field('Content-Type', 'application/json')
 			request.body = data.to_json
 			response = @http.request(request)
