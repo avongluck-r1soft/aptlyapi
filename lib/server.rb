@@ -97,7 +97,7 @@ module AptlyAPI
 		end
 
 		##
-		# Publish a repo from +sources+ (array of "Component/Name")
+		# Publish a repo from +sources+ (hash of "Component/Name")
 		#
 		# TODO: There are bare minimum for the moment and will change
 		def publish(kind, sources, distribution, keyid, password)
@@ -106,7 +106,7 @@ module AptlyAPI
 			body.merge!({"Sources" => sources})
 			body.merge!({"Distribution" => distribution})
 			body.merge!({"ForceOverwrite" => true})
-			body.merge!({"Signing" => { "GpgKey" => keyid, "Passphrase" => password}})
+			body.merge!({"Signing" => { "Batch" => true, "GpgKey" => keyid, "Passphrase" => password}})
 			return true if hpost('/api/publish', body) == 200
 			return false
 		end
@@ -118,7 +118,7 @@ module AptlyAPI
 		def publish_update(distribution, keyid, password)
 			body = Hash.new
 			body.merge!({"ForceOverwrite" => true})
-			body.merge!({"Signing" => { "GpgKey" => keyid, "Passphrase" => password}})
+			body.merge!({"Signing" => { "Batch" => true, "GpgKey" => keyid, "Passphrase" => password}})
 			return true if hput("/api/publish//#{distribution}", body) == 200
 			return false
 		end
