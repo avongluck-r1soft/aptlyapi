@@ -100,14 +100,14 @@ module AptlyAPI
 		# Publish a repo from +sources+ (hash of "Component/Name")
 		#
 		# TODO: There are bare minimum for the moment and will change
-		def publish(kind, sources, distribution, keyid, password)
+		def publish(kind, prefix, sources, distribution, keyid, password)
 			body = Hash.new
 			body.merge!({"SourceKind" => kind})
 			body.merge!({"Sources" => sources})
 			body.merge!({"Distribution" => distribution})
 			body.merge!({"ForceOverwrite" => true})
 			body.merge!({"Signing" => { "Batch" => true, "GpgKey" => keyid, "Passphrase" => password}})
-			return true if hpost('/api/publish', body) == 200
+			return true if hpost("/api/publish/#{prefix.to_s}", body).between?(200, 299)
 			return false
 		end
 
@@ -115,11 +115,11 @@ module AptlyAPI
 		# Update a published repo
 		#
 		# TODO: There are bare minimum for the moment and will change
-		def publish_update(distribution, keyid, password)
+		def publish_update(prefix, distribution, keyid, password)
 			body = Hash.new
 			body.merge!({"ForceOverwrite" => true})
 			body.merge!({"Signing" => { "Batch" => true, "GpgKey" => keyid, "Passphrase" => password}})
-			return true if hput("/api/publish//#{distribution}", body) == 200
+			return true if hput("/api/publish/#{prefix.to_s}/#{distribution.to_s}", body).between?(200, 299)
 			return false
 		end
 
@@ -137,7 +137,7 @@ module AptlyAPI
 		def hget(path)
 			request = Net::HTTP::Get.new("#{@server.path}#{path}")
 			response = @http.request(request)
-			if response.code.to_i != 200
+			if !response.code.to_i.between?(200, 299)
 				return response.code.to_i
 			end
 			return JSON.parse(response.body)
