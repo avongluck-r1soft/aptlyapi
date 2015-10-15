@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name           = 'aptlyapi'
-  s.version        = '0.0.7'
+  s.version        = '0.0.8'
   s.date           = '2015-08-13'
   s.summary        = 'Aptly API wrangler'
   s.description    = 'Manage remote Aptly servers via the Aptly API'
